@@ -116,8 +116,6 @@ START_TEST (test_matrix_multiply)
 }
 END_TEST
 
-#include <stdio.h>
-
 START_TEST (test_matrix_rotate)
 {
     FcMatrix matrix;
@@ -135,6 +133,45 @@ START_TEST (test_matrix_rotate)
     ck_assert(matrix.xy == -5.0);
     ck_assert(matrix.yx == 2.0);
     ck_assert(matrix.yy == 3.0);
+}
+END_TEST
+
+START_TEST (test_matrix_scale)
+{
+    FcMatrix matrix;
+
+    matrix.xx = 2.0;
+    matrix.xy = 3.0;
+    matrix.yx = 4.0;
+    matrix.yy = 5.0;
+
+    FcMatrixScale(&matrix, 2.0, 0.5);
+
+    ck_assert(matrix.xx == 4.0);
+    ck_assert(matrix.xy == 6.0);
+    ck_assert(matrix.yx == 2.0);
+    ck_assert(matrix.yy == 2.5);
+}
+END_TEST
+
+#include <stdio.h>
+
+START_TEST (test_matrix_shear)
+{
+    FcMatrix matrix;
+
+    matrix.xx = 2.0;
+    matrix.xy = 3.0;
+    matrix.yx = 4.0;
+    matrix.yy = 5.0;
+
+    FcMatrixShear(&matrix, 2.0, 0.5);
+
+    ck_assert(matrix.xx == 10.0);
+    ck_assert(matrix.xy == 13.0);
+    ck_assert(matrix.yx == 5.0);
+    ck_assert(matrix.yy == 6.5);
+
 }
 END_TEST
 
@@ -162,6 +199,14 @@ Suite* matrix_suite()
     TCase *tc_matrix_rotate = tcase_create("FcMatrixRotate");
     tcase_add_test(tc_matrix_rotate, test_matrix_rotate);
     suite_add_tcase(s, tc_matrix_rotate);
+
+    TCase *tc_matrix_scale = tcase_create("FcMatrixScale");
+    tcase_add_test(tc_matrix_scale, test_matrix_scale);
+    suite_add_tcase(s, tc_matrix_scale);
+
+    TCase *tc_matrix_shear = tcase_create("FcMatrixShear");
+    tcase_add_test(tc_matrix_shear, test_matrix_shear);
+    suite_add_tcase(s, tc_matrix_shear);
 
     return s;
 }
